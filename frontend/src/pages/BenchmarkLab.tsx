@@ -141,7 +141,7 @@ export function BenchmarkLab() {
       />
 
       <Card className="mb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div data-controls="true" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div>
             <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">Algorithms</label>
             <div className="mt-2 flex flex-wrap gap-2">

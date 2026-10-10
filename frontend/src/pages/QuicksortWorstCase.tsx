@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   CartesianGrid,
   Legend as RechartsLegend,
@@ -11,6 +11,7 @@ import {
 } from 'recharts'
 import { api } from '../api/client'
 import { Button, Card, SectionHeading, Skeleton } from '../components/ui'
+import { useGuidedDemo } from '../context/GuidedDemoContext'
 import { useToast } from '../context/ToastContext'
 import { colorForIndex } from '../lib/palette'
 import type { BenchmarkSeries } from '../types'
@@ -23,6 +24,9 @@ export function QuicksortWorstCase() {
   const [loading, setLoading] = useState(false)
   const [series, setSeries] = useState<BenchmarkSeries[] | null>(null)
 
+  const { active: guidedActive, stepIndex: guidedStepIndex, steps: guidedSteps } = useGuidedDemo()
+  const thisStepIndex = guidedSteps.findIndex((s) => s.route === '/quicksort-worst-case')
+
   async function run() {
     setLoading(true)
     try {
@@ -34,6 +38,13 @@ export function QuicksortWorstCase() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (guidedActive && guidedStepIndex === thisStepIndex) {
+      run()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guidedActive, guidedStepIndex])
 
   const data = useMemo(() => {
     if (!series) return []

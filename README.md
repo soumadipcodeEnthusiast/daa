@@ -99,7 +99,60 @@ docker-compose.yml, backend/Dockerfile, frontend/Dockerfile, frontend/nginx.conf
 | `/api/history` | GET | Last 20 benchmark runs |
 | `/api/search` | POST | Linear/binary search trace |
 
-## Demo script
+## Presenting it
 
-See the end of this file (added once the Guided Demo is built) for the full
-5-minute speaking script that matches the in-app Guided Demo button.
+- **Presentation Mode** (top-right button) drops the sidebar, enlarges headings,
+  and hides the dense multi-input configuration panels on Race Arena and
+  Benchmark Lab, leaving just the chart/animation and the action buttons visible.
+- **Guided Demo** (top-right button) drives a scripted, presenter-paced 5-step
+  walkthrough: it navigates to the right page, auto-configures and auto-runs
+  each one, and shows a caption bar at the bottom with Prev/Next/Exit. You
+  advance it manually while you talk, so it never gets ahead of (or behind) you.
+
+## 5-minute speaking script (matches the Guided Demo)
+
+**Step 1 -- Race Arena (`/`): the race of O(n²) vs O(n log n)** *(~60s)*
+> "Here's bubble sort and merge sort, racing on the exact same random array of 40
+> numbers. Watch the comparisons counter on the left climb -- bubble sort is doing
+> roughly n² work, about 800 comparisons for 40 elements. Merge sort does maybe 150,
+> because it's n log n. They finish at completely different speeds even though
+> they're solving the identical problem."
+
+**Step 2 -- Lower-Bound Visualizer (`/lower-bound`): why O(n log n) is a floor** *(~70s)*
+> "This isn't a coincidence of these particular algorithms -- it's a hard limit.
+> Model any comparison-based sort as a decision tree: every comparison is a branch,
+> every leaf is one possible output order. Sorting n elements needs n! possible
+> leaves, so the tree's height -- which is the worst-case number of comparisons --
+> is at least log2(n!), which by Stirling's approximation is Theta(n log n). You can
+> see merge sort, heap sort, and randomized quicksort all measuring right at that
+> line, for n from 4 up to 2,000. And here's the actual decision tree for sorting
+> just 3 elements: 6 leaves, one per permutation, minimum height 3 -- exactly
+> ceil(log2(6))."
+
+**Step 3 -- Counting Sort Breaks the Bound (`/counting-breaks-bound`)** *(~60s)*
+> "So how does counting sort claim to be faster than the bound allows? It cheats --
+> in a good way. It never compares two elements against each other; it counts
+> occurrences per key and places them by prefix sum. No comparisons means the
+> Omega(n log n) argument doesn't apply at all. Here it is next to merge sort out to
+> a million elements, looking essentially linear. But look at the slider: that
+> speed is conditional on the key range k staying small. As I drag k up past a few
+> hundred thousand even at a modest n, the O(n+k) term takes over and both the time
+> and the memory blow up -- that's the tradeoff you're actually paying for."
+
+**Step 4 -- Quicksort Worst Case (`/quicksort-worst-case`)** *(~60s)*
+> "Last one: quicksort's worst case isn't really about quicksort, it's about pivot
+> selection. Both of these are the same algorithm, run on the same already-sorted
+> input. The first-element-pivot version always picks the smallest remaining
+> element as pivot, so every partition splits into sizes 0 and n-1 -- that's the
+> classic adversarial O(n²) case, and you can see its comparison count land almost
+> exactly on n(n-1)/2. Randomize the pivot choice -- one line of code -- and the
+> same input now costs about 1.39·n·log2(n) comparisons in expectation, which is
+> what you see the random-pivot line tracking."
+
+**Step 5 -- Summary** *(~30s)*
+> "Three takeaways: comparison sorts have a real, provable floor at Omega(n log n).
+> Non-comparison sorts can beat that floor, but only by trading it for a dependence
+> on the key range. And a worst case is often a property of a design decision --
+> like which element you pick as pivot -- not an inherent property of the
+> algorithm itself. Everything on these slides was measured live against the
+> theory, not asserted."

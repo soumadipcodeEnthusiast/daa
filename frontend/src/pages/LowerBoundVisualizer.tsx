@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   CartesianGrid,
   Legend as RechartsLegend,
@@ -12,6 +12,7 @@ import {
 import { api } from '../api/client'
 import { Button, Card, SectionHeading, Skeleton } from '../components/ui'
 import { DecisionTreeDiagram } from '../components/DecisionTreeDiagram'
+import { useGuidedDemo } from '../context/GuidedDemoContext'
 import { useToast } from '../context/ToastContext'
 import { colorForIndex } from '../lib/palette'
 import type { BenchmarkSeries } from '../types'
@@ -30,6 +31,9 @@ export function LowerBoundVisualizer() {
   const [loading, setLoading] = useState(false)
   const [series, setSeries] = useState<BenchmarkSeries[] | null>(null)
 
+  const { active: guidedActive, stepIndex: guidedStepIndex, steps: guidedSteps } = useGuidedDemo()
+  const thisStepIndex = guidedSteps.findIndex((s) => s.route === '/lower-bound')
+
   async function run() {
     setLoading(true)
     try {
@@ -40,6 +44,13 @@ export function LowerBoundVisualizer() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (guidedActive && guidedStepIndex === thisStepIndex) {
+      run()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guidedActive, guidedStepIndex])
 
   const data = useMemo(() => {
     if (!series) return []

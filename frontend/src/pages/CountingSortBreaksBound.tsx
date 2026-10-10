@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   CartesianGrid,
   Legend as RechartsLegend,
@@ -11,6 +11,7 @@ import {
 } from 'recharts'
 import { api } from '../api/client'
 import { Button, Card, SectionHeading, Skeleton } from '../components/ui'
+import { useGuidedDemo } from '../context/GuidedDemoContext'
 import { useToast } from '../context/ToastContext'
 import { colorForIndex } from '../lib/palette'
 import type { BenchmarkSeries } from '../types'
@@ -29,6 +30,9 @@ export function CountingSortBreaksBound() {
   const [kLoading, setKLoading] = useState(false)
   const [kResults, setKResults] = useState<{ k: number; medianNanos: number; extraMemoryUnits: number }[]>([])
 
+  const { active: guidedActive, stepIndex: guidedStepIndex, steps: guidedSteps } = useGuidedDemo()
+  const thisStepIndex = guidedSteps.findIndex((s) => s.route === '/counting-breaks-bound')
+
   async function runScale() {
     setScaleLoading(true)
     try {
@@ -39,6 +43,13 @@ export function CountingSortBreaksBound() {
       setScaleLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (guidedActive && guidedStepIndex === thisStepIndex) {
+      runScale()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guidedActive, guidedStepIndex])
 
   async function runForK(exponentIdx: number) {
     setKExponentIdx(exponentIdx)

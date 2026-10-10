@@ -4,25 +4,20 @@ import { Badge, Button, Card, SectionHeading, Skeleton } from '../components/ui'
 import { Legend } from '../components/Legend'
 import { RacePanel } from '../components/RacePanel'
 import { useRaceEngine } from '../hooks/useRaceEngine'
+import { useGuidedDemo } from '../context/GuidedDemoContext'
 import { useToast } from '../context/ToastContext'
 import { INPUT_TYPES, type AlgorithmMeta, type InputType, type RaceResponse } from '../types'
 
 const DEFAULT_SELECTION = ['bubble', 'merge', 'quick-random', 'quick-first']
 
-export interface RaceArenaControls {
+interface RaceOverrides {
   algorithms: string[]
   inputType: InputType
   size: number
   seed: number
 }
 
-export function RaceArena({
-  externalControls,
-  onExternalApplied,
-}: {
-  externalControls?: RaceArenaControls | null
-  onExternalApplied?: () => void
-}) {
+export function RaceArena() {
   const { push } = useToast()
   const [algorithms, setAlgorithms] = useState<AlgorithmMeta[]>([])
   const [selected, setSelected] = useState<string[]>(DEFAULT_SELECTION)
@@ -33,22 +28,15 @@ export function RaceArena({
   const [loading, setLoading] = useState(false)
   const [race, setRace] = useState<RaceResponse | null>(null)
 
+  const { active: guidedActive, stepIndex: guidedStepIndex, steps: guidedSteps } = useGuidedDemo()
+  const raceStepIndex = guidedSteps.findIndex((s) => s.route === '/')
+
   useEffect(() => {
     api
       .getAlgorithms()
       .then((all) => setAlgorithms(all.filter((a) => !a.id.endsWith('-search'))))
       .catch(() => push('Could not load algorithm list from backend', 'error'))
   }, [push])
-
-  useEffect(() => {
-    if (!externalControls) return
-    setSelected(externalControls.algorithms)
-    setInputType(externalControls.inputType)
-    setSize(externalControls.size)
-    setSeed(externalControls.seed)
-    onExternalApplied?.()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalControls])
 
   const engine = useRaceEngine(race?.results ?? [], race?.inputArray ?? [], speedMs)
 
@@ -57,14 +45,18 @@ export function RaceArena({
     return Math.max(1, ...race.inputArray)
   }, [race])
 
-  async function startRace() {
-    if (selected.length < 2 || selected.length > 4) {
+  async function startRace(overrides?: RaceOverrides) {
+    const algos = overrides?.algorithms ?? selected
+    const type = overrides?.inputType ?? inputType
+    const sz = overrides?.size ?? size
+    const sd = overrides?.seed ?? seed
+    if (algos.length < 2 || algos.length > 4) {
       push('Pick between 2 and 4 algorithms to race', 'error')
       return
     }
     setLoading(true)
     try {
-      const result = await api.race(selected, inputType, size, seed)
+      const result = await api.race(algos, type, sz, sd)
       setRace(result)
     } catch (e) {
       push(e instanceof Error ? e.message : 'Race failed', 'error')
@@ -72,6 +64,27 @@ export function RaceArena({
       setLoading(false)
     }
   }
+
+  // Guided Demo step 1: auto-configure a slow O(n^2) sort against a fast O(n log n) one, and start the race.
+  useEffect(() => {
+    if (guidedActive && guidedStepIndex === raceStepIndex) {
+      const demoAlgorithms = ['bubble', 'merge']
+      setSelected(demoAlgorithms)
+      setInputType('random')
+      setSize(40)
+      setSeed(42)
+      startRace({ algorithms: demoAlgorithms, inputType: 'random', size: 40, seed: 42 })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [guidedActive, guidedStepIndex])
+
+  // Once the guided demo's race data lands, auto-play it.
+  useEffect(() => {
+    if (guidedActive && guidedStepIndex === raceStepIndex && race) {
+      engine.play()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [race])
 
   function toggleAlgo(id: string) {
     setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
@@ -87,7 +100,7 @@ export function RaceArena({
       />
 
       <Card className="mb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div data-controls="true" className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-2">
             <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">
               Algorithms ({selected.length}/4)
@@ -167,7 +180,7 @@ export function RaceArena({
         </div>
 
         <div className="mt-5 flex items-center gap-3">
-          <Button onClick={startRace} disabled={loading}>
+          <Button onClick={() => startRace()} disabled={loading}>
             {loading ? 'Generating…' : '🏁 Start Race'}
           </Button>
           {race && (

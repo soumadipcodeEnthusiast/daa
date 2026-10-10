@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useGuidedDemo } from '../context/GuidedDemoContext'
 import { usePresentation } from '../context/PresentationContext'
 import { Button } from './ui'
 
@@ -13,17 +14,12 @@ const NAV_ITEMS = [
   { to: '/search', label: 'Search Visualizer', icon: '🔍' },
 ]
 
-export function Layout({
-  children,
-  onStartGuidedDemo,
-}: {
-  children: ReactNode
-  onStartGuidedDemo: () => void
-}) {
+export function Layout({ children }: { children: ReactNode }) {
   const { presentation, togglePresentation } = usePresentation()
+  const { active: guidedActive, start: startGuidedDemo } = useGuidedDemo()
 
   return (
-    <div className="min-h-screen bg-arena-bg bg-grid text-slate-200 flex">
+    <div className={`min-h-screen bg-arena-bg bg-grid text-slate-200 flex ${presentation ? 'presentation-mode' : ''}`}>
       {!presentation && (
         <aside className="w-64 shrink-0 border-r border-arena-border bg-arena-panel/60 backdrop-blur-sm flex flex-col">
           <div className="px-5 py-5 border-b border-arena-border">
@@ -63,7 +59,7 @@ export function Layout({
             {presentation ? 'Presentation Mode' : 'Live demo environment'}
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="secondary" onClick={onStartGuidedDemo}>
+            <Button variant="secondary" onClick={startGuidedDemo}>
               ▶ Guided Demo
             </Button>
             <Button variant={presentation ? 'primary' : 'secondary'} onClick={togglePresentation}>
@@ -71,7 +67,7 @@ export function Layout({
             </Button>
           </div>
         </header>
-        <main className={`flex-1 overflow-y-auto p-6 ${presentation ? 'text-lg' : ''}`}>
+        <main className={`flex-1 overflow-y-auto p-6 ${presentation ? 'text-lg presentation-scale' : ''} ${guidedActive ? 'pb-24' : ''}`}>
           {children}
         </main>
       </div>
