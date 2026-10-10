@@ -1,0 +1,8 @@
+target/
+*.class
+.DS_Store
+node_modules/
+dist/
+frontend/dist/
+.idea/
+*.iml
