@@ -29,7 +29,8 @@ public class BenchmarkController {
     @PostMapping("/benchmark")
     public List<BenchmarkService.BenchmarkSeries> benchmark(@Valid @RequestBody BenchmarkRequest request) {
         return benchmarkService.run(
-                request.getAlgorithms(), request.getInputType(), request.getSizes(), request.getRepetitions());
+                request.getAlgorithms(), request.getInputType(), request.getSizes(), request.getRepetitions(),
+                request.getKeyRange());
     }
 
     @GetMapping("/history")

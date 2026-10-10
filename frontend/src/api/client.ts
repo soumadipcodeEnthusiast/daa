@@ -51,10 +51,16 @@ export const api = {
       body: JSON.stringify({ algorithms, inputType, size, seed }),
     }),
 
-  benchmark: (algorithms: string[], inputType: InputType, sizes: number[], repetitions: number) =>
+  benchmark: (
+    algorithms: string[],
+    inputType: InputType,
+    sizes: number[],
+    repetitions: number,
+    keyRange?: number
+  ) =>
     request<BenchmarkSeries[]>('/benchmark', {
       method: 'POST',
-      body: JSON.stringify({ algorithms, inputType, sizes, repetitions }),
+      body: JSON.stringify({ algorithms, inputType, sizes, repetitions, keyRange }),
     }),
 
   history: () => request<BenchmarkRun[]>('/history'),

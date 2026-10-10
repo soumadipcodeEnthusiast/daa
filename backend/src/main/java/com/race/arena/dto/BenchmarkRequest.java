@@ -18,6 +18,9 @@ public class BenchmarkRequest {
 
     private int repetitions = 5;
 
+    /** Overrides the value range for "random" input; used by the counting-sort O(n+k) demo page. */
+    private Integer keyRange;
+
     public List<String> getAlgorithms() {
         return algorithms;
     }
@@ -48,5 +51,13 @@ public class BenchmarkRequest {
 
     public void setRepetitions(int repetitions) {
         this.repetitions = repetitions;
+    }
+
+    public Integer getKeyRange() {
+        return keyRange;
+    }
+
+    public void setKeyRange(Integer keyRange) {
+        this.keyRange = keyRange;
     }
 }

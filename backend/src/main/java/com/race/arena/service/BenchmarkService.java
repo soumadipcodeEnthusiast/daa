@@ -25,13 +25,19 @@ public class BenchmarkService {
         this.repository = repository;
     }
 
-    public record BenchmarkPoint(int size, long medianNanos, long comparisons, boolean skipped, String skipReason) {
+    public record BenchmarkPoint(
+            int size, long medianNanos, long comparisons, long extraMemoryUnits, boolean skipped, String skipReason) {
     }
 
     public record BenchmarkSeries(String algorithm, List<BenchmarkPoint> points) {
     }
 
     public List<BenchmarkSeries> run(List<String> algorithmIds, String inputType, List<Integer> sizes, int repetitions) {
+        return run(algorithmIds, inputType, sizes, repetitions, null);
+    }
+
+    public List<BenchmarkSeries> run(
+            List<String> algorithmIds, String inputType, List<Integer> sizes, int repetitions, Integer keyRange) {
         if (repetitions < 1) throw new IllegalArgumentException("repetitions must be >= 1");
         List<BenchmarkSeries> series = new ArrayList<>();
 
@@ -42,25 +48,27 @@ public class BenchmarkService {
             for (int size : sizes) {
                 int cap = registry.isQuadraticWorstCase(algoId) ? MAX_SIZE_QUADRATIC : MAX_SIZE_FAST;
                 if (size > cap) {
-                    points.add(new BenchmarkPoint(size, 0, 0, true,
+                    points.add(new BenchmarkPoint(size, 0, 0, 0, true,
                             "Skipped: n=" + size + " exceeds the safe cap of " + cap + " for this algorithm's worst case"));
                     continue;
                 }
 
-                int[] input = inputGenerator.generate(inputType, size, 42L);
+                int[] input = inputGenerator.generate(inputType, size, 42L, keyRange);
 
                 // JIT warm-up: run once (and discard) before the timed repetitions.
                 algo.runFast(input);
 
                 long[] timings = new long[repetitions];
                 long comparisons = 0;
+                long extraMemoryUnits = 0;
                 for (int r = 0; r < repetitions; r++) {
                     SortRunResult result = algo.runFast(input);
                     timings[r] = result.stats().elapsedNanos();
                     comparisons = result.stats().comparisons();
+                    extraMemoryUnits = result.stats().extraMemoryUnits();
                 }
                 long median = median(timings);
-                points.add(new BenchmarkPoint(size, median, comparisons, false, null));
+                points.add(new BenchmarkPoint(size, median, comparisons, extraMemoryUnits, false, null));
 
                 repository.save(new BenchmarkRun(algoId, inputType, size, repetitions, median, comparisons));
             }

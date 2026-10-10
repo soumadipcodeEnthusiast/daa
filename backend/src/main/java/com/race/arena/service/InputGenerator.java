@@ -12,9 +12,20 @@ public class InputGenerator {
     );
 
     public int[] generate(String type, int size, long seed) {
+        return generate(type, size, seed, null);
+    }
+
+    /**
+     * keyRange, when given, overrides the value bound for "random" input (used by the
+     * Counting Sort Breaks the Bound page to demonstrate the O(n+k) tradeoff independently of n).
+     */
+    public int[] generate(String type, int size, long seed, Integer keyRange) {
         if (size < 0) throw new IllegalArgumentException("size must be >= 0");
         if (!TYPES.contains(type)) {
             throw new IllegalArgumentException("Unknown inputType: " + type + ". Expected one of " + TYPES);
+        }
+        if (keyRange != null && keyRange < 1) {
+            throw new IllegalArgumentException("keyRange must be >= 1");
         }
         Random rnd = new Random(seed);
         int[] a = new int[size];
@@ -48,7 +59,7 @@ public class InputGenerator {
                 for (int i = 0; i < size; i++) a[i] = distinctValues[rnd.nextInt(distinctCount)];
             }
             default -> {
-                int bound = Math.max(size * 10, 1000);
+                int bound = keyRange != null ? keyRange : Math.max(size * 10, 1000);
                 for (int i = 0; i < size; i++) a[i] = rnd.nextInt(bound);
             }
         }

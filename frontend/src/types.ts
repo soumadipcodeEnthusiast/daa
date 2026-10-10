@@ -63,6 +63,7 @@ export interface BenchmarkPoint {
   size: number
   medianNanos: number
   comparisons: number
+  extraMemoryUnits: number
   skipped: boolean
   skipReason: string | null
 }

@@ -5,7 +5,11 @@ import { PresentationProvider } from './context/PresentationContext'
 import { ToastProvider } from './context/ToastContext'
 import { RaceArena } from './pages/RaceArena'
 import { BenchmarkLab } from './pages/BenchmarkLab'
-import { Placeholder } from './pages/Placeholder'
+import { LowerBoundVisualizer } from './pages/LowerBoundVisualizer'
+import { CountingSortBreaksBound } from './pages/CountingSortBreaksBound'
+import { QuicksortWorstCase } from './pages/QuicksortWorstCase'
+import { TheoryCards } from './pages/TheoryCards'
+import { SearchVisualizer } from './pages/SearchVisualizer'
 
 function AppRoutes() {
   const [guidedCue, setGuidedCue] = useState(0)
@@ -15,11 +19,11 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<RaceArena />} />
         <Route path="/benchmark" element={<BenchmarkLab />} />
-        <Route path="/lower-bound" element={<Placeholder title="Lower-Bound Visualizer" />} />
-        <Route path="/counting-breaks-bound" element={<Placeholder title="Counting Sort Breaks the Bound" />} />
-        <Route path="/quicksort-worst-case" element={<Placeholder title="Quicksort Worst Case" />} />
-        <Route path="/theory" element={<Placeholder title="Theory Cards" />} />
-        <Route path="/search" element={<Placeholder title="Search Visualizer" />} />
+        <Route path="/lower-bound" element={<LowerBoundVisualizer />} />
+        <Route path="/counting-breaks-bound" element={<CountingSortBreaksBound />} />
+        <Route path="/quicksort-worst-case" element={<QuicksortWorstCase />} />
+        <Route path="/theory" element={<TheoryCards />} />
+        <Route path="/search" element={<SearchVisualizer />} />
       </Routes>
       {guidedCue > 0 && null}
     </Layout>
