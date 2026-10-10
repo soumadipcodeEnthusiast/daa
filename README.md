@@ -67,7 +67,9 @@ npm run dev
 Open http://localhost:5173. The Vite dev server proxies `/api` to
 `http://localhost:8080`, so this also works unchanged if the backend is running in
 Docker (`docker compose up backend`) instead of locally -- just leave the frontend
-on `npm run dev`.
+on `npm run dev`. If something else on your machine already holds port 8080, run
+the backend with `--server.port=<port>` and point the frontend at it with
+`BACKEND_PORT=<port> npm run dev`.
 
 ### Running the backend tests
 
