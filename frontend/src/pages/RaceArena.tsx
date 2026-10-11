@@ -102,7 +102,7 @@ export function RaceArena() {
       <Card className="mb-6">
         <div data-controls="true" className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-2">
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">
               Algorithms ({selected.length}/4)
             </label>
             <div className="mt-2 flex flex-wrap gap-2">
@@ -114,10 +114,10 @@ export function RaceArena() {
                   <button
                     key={a.id}
                     onClick={() => toggleAlgo(a.id)}
-                    className={`rounded-lg border px-3 py-1.5 text-sm transition ${
+                    className={`rounded-lg border px-3 py-1.5 text-sm transition font-medium ${
                       active
-                        ? 'border-indigo-400 bg-indigo-500/20 text-indigo-200'
-                        : 'border-arena-border bg-arena-panel2 text-slate-400 hover:text-slate-200'
+                        ? 'border-[#C9A84C] bg-[#C9A84C]/15 text-[#8C6D23]'
+                        : 'border-arena-border bg-white text-neutral-700 hover:text-black hover:border-neutral-400'
                     }`}
                   >
                     {a.name}
@@ -128,13 +128,13 @@ export function RaceArena() {
           </div>
 
           <div>
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">
               Input type
             </label>
             <select
               value={inputType}
               onChange={(e) => setInputType(e.target.value as InputType)}
-              className="mt-2 w-full rounded-lg border border-arena-border bg-arena-panel2 px-3 py-2 text-sm text-slate-200"
+              className="mt-2 w-full rounded-lg border border-arena-border bg-white px-3 py-2 text-sm text-neutral-900 shadow-sm focus:border-[#C9A84C] focus:outline-none"
             >
               {INPUT_TYPES.map((t) => (
                 <option key={t.value} value={t.value}>
@@ -142,20 +142,20 @@ export function RaceArena() {
                 </option>
               ))}
             </select>
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium mt-4 block">
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold mt-4 block">
               Seed
             </label>
             <input
               type="number"
               value={seed}
               onChange={(e) => setSeed(Number(e.target.value))}
-              className="mt-2 w-full rounded-lg border border-arena-border bg-arena-panel2 px-3 py-2 text-sm text-slate-200"
+              className="mt-2 w-full rounded-lg border border-arena-border bg-white px-3 py-2 text-sm text-neutral-900 shadow-sm focus:border-[#C9A84C] focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">
-              Size: <span className="text-slate-200 font-mono">{size}</span>
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">
+              Size: <span className="text-neutral-900 font-mono font-bold">{size}</span>
             </label>
             <input
               type="range"
@@ -165,8 +165,8 @@ export function RaceArena() {
               onChange={(e) => setSize(Number(e.target.value))}
               className="mt-3 w-full"
             />
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium mt-4 block">
-              Speed: <span className="text-slate-200 font-mono">{speedMs}ms/step</span>
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold mt-4 block">
+              Speed: <span className="text-neutral-900 font-mono font-bold">{speedMs}ms/step</span>
             </label>
             <input
               type="range"
@@ -181,18 +181,18 @@ export function RaceArena() {
 
         <div className="mt-5 flex items-center gap-3">
           <Button onClick={() => startRace()} disabled={loading}>
-            {loading ? 'Generating…' : '🏁 Start Race'}
+            {loading ? 'Generating…' : 'Start Race'}
           </Button>
           {race && (
             <>
               <Button variant="secondary" onClick={engine.playing ? engine.pause : engine.play} disabled={engine.allFinished}>
-                {engine.playing ? '⏸ Pause' : '▶ Play'}
+                {engine.playing ? 'Pause' : 'Play'}
               </Button>
               <Button variant="secondary" onClick={engine.step} disabled={engine.playing || engine.allFinished}>
-                ⏭ Step
+                Step
               </Button>
               <Button variant="secondary" onClick={engine.reset}>
-                ↺ Reset
+                Reset
               </Button>
             </>
           )}
@@ -202,8 +202,8 @@ export function RaceArena() {
       </Card>
 
       {!race && !loading && (
-        <Card className="text-center text-slate-500 py-16">
-          Configure the race above and hit <span className="text-slate-300 font-medium">Start Race</span>.
+        <Card className="text-center text-neutral-500 py-16">
+          Configure the race above and click <span className="text-neutral-900 font-semibold">Start Race</span>.
         </Card>
       )}
 

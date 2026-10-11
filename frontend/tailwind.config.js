@@ -6,16 +6,16 @@ export default {
     extend: {
       colors: {
         arena: {
-          bg: '#0b0e14',
-          panel: '#121725',
-          panel2: '#161c2d',
-          border: '#232b40',
-          accent: '#6366f1',
-          accent2: '#22d3ee',
-          compare: '#facc15',
-          swap: '#f87171',
-          pivot: '#c084fc',
-          sorted: '#4ade80',
+          bg:      '#ffffff',
+          panel:   '#fafafa',
+          panel2:  '#f5f5f5',
+          border:  '#e5e5e5',
+          accent:  '#C9A84C',
+          accent2: '#7C3AED',
+          compare: '#C9A84C',
+          swap:    '#7C3AED',
+          pivot:   '#A855F7',
+          sorted:  '#171717',
         },
       },
       fontFamily: {

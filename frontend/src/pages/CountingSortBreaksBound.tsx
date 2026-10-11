@@ -93,7 +93,7 @@ export function CountingSortBreaksBound() {
 
       <Card className="mb-6" title="Linear time at scale" subtitle="Key range fixed at k=2,000 -- watch counting/radix pull away from merge sort as n grows to 1,000,000.">
         <Button onClick={runScale} disabled={scaleLoading} className="mb-4">
-          {scaleLoading ? 'Running…' : '🧮 Run up to n = 1,000,000'}
+          {scaleLoading ? 'Running…' : 'Run up to n = 1,000,000'}
         </Button>
 
         {scaleLoading && <Skeleton className="h-80" />}
@@ -101,11 +101,11 @@ export function CountingSortBreaksBound() {
         {scaleSeries && !scaleLoading && (
           <ResponsiveContainer width="100%" height={340}>
             <LineChart data={scaleData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-              <CartesianGrid stroke="#232b40" strokeDasharray="3 3" />
-              <XAxis dataKey="size" scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} />
-              <YAxis scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1e6).toFixed(1)}ms`} />
+              <CartesianGrid stroke="#e5e5e5" strokeDasharray="3 3" />
+              <XAxis dataKey="size" scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} />
+              <YAxis scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1e6).toFixed(1)}ms`} />
               <RechartsTooltip
-                contentStyle={{ background: '#121725', border: '1px solid #232b40', borderRadius: 8 }}
+                contentStyle={{ background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: 8, color: '#171717', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.08)' }}
                 formatter={(value) => `${(Number(value) / 1e6).toFixed(3)} ms`}
               />
               <RechartsLegend />
@@ -119,7 +119,7 @@ export function CountingSortBreaksBound() {
 
       <Card title="The O(n + k) tradeoff" subtitle={`Counting sort at a fixed n = ${FIXED_N_FOR_KSLIDER.toLocaleString()} -- slide the key range and watch time and memory grow with k.`}>
         <div className="mb-4">
-          <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">
+          <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">
             Key range k = 10<sup>{K_EXPONENTS[kExponentIdx]}</sup> = {currentK.toLocaleString()}
           </label>
           <input
@@ -132,7 +132,7 @@ export function CountingSortBreaksBound() {
             disabled={kLoading}
             className="mt-3 w-full"
           />
-          <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
+          <div className="flex justify-between text-[10px] text-neutral-500 mt-1 font-mono font-medium">
             {K_EXPONENTS.map((e) => (
               <span key={e}>10^{e}</span>
             ))}
@@ -144,11 +144,11 @@ export function CountingSortBreaksBound() {
         {!kLoading && kResults.length > 0 && (
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={kResults} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-              <CartesianGrid stroke="#232b40" strokeDasharray="3 3" />
-              <XAxis dataKey="k" scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} tickFormatter={(v) => v.toLocaleString()} />
-              <YAxis yAxisId="time" stroke="#64748b" tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1e6).toFixed(1)}ms`} />
+              <CartesianGrid stroke="#e5e5e5" strokeDasharray="3 3" />
+              <XAxis dataKey="k" scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} tickFormatter={(v) => v.toLocaleString()} />
+              <YAxis yAxisId="time" stroke="#737373" tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1e6).toFixed(1)}ms`} />
               <RechartsTooltip
-                contentStyle={{ background: '#121725', border: '1px solid #232b40', borderRadius: 8 }}
+                contentStyle={{ background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: 8, color: '#171717', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.08)' }}
                 formatter={(value, name) =>
                   name === 'medianNanos' ? [`${(Number(value) / 1e6).toFixed(2)} ms`, 'Time'] : [Number(value).toLocaleString(), 'Extra memory (ints)']
                 }
@@ -163,18 +163,18 @@ export function CountingSortBreaksBound() {
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-slate-500 border-b border-arena-border">
-                  <th className="py-2 pr-4">k</th>
-                  <th className="py-2 pr-4">Median time</th>
-                  <th className="py-2 pr-4">Extra memory (ints)</th>
+                <tr className="text-left text-neutral-500 border-b border-arena-border">
+                  <th className="py-2 pr-4 font-semibold">k</th>
+                  <th className="py-2 pr-4 font-semibold">Median time</th>
+                  <th className="py-2 pr-4 font-semibold">Extra memory (ints)</th>
                 </tr>
               </thead>
               <tbody>
                 {kResults.map((r) => (
-                  <tr key={r.k} className="border-b border-arena-border/50">
-                    <td className="py-1.5 pr-4 font-mono">{r.k.toLocaleString()}</td>
-                    <td className="py-1.5 pr-4 font-mono">{(r.medianNanos / 1e6).toFixed(3)} ms</td>
-                    <td className="py-1.5 pr-4 font-mono">{r.extraMemoryUnits.toLocaleString()}</td>
+                  <tr key={r.k} className="border-b border-arena-border">
+                    <td className="py-2 pr-4 font-mono text-neutral-700">{r.k.toLocaleString()}</td>
+                    <td className="py-2 pr-4 font-mono text-neutral-700">{(r.medianNanos / 1e6).toFixed(3)} ms</td>
+                    <td className="py-2 pr-4 font-mono text-neutral-700">{r.extraMemoryUnits.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
@@ -183,7 +183,7 @@ export function CountingSortBreaksBound() {
         )}
 
         {kResults.length === 0 && !kLoading && (
-          <div className="text-center text-slate-500 py-10">Move the slider to measure counting sort at that key range.</div>
+          <div className="text-center text-neutral-500 py-10 font-medium">Move the slider to measure counting sort at that key range.</div>
         )}
       </Card>
     </div>

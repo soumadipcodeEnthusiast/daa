@@ -29,7 +29,7 @@ export function TheoryCards() {
         {algorithms?.map((a) => (
           <Card key={a.id}>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold text-slate-100">{a.name}</h3>
+              <h3 className="text-lg font-semibold text-neutral-900">{a.name}</h3>
               <Badge tone="accent">{a.category === 'comparison' ? 'Comparison-based' : 'Non-comparison'}</Badge>
             </div>
 
@@ -47,11 +47,11 @@ export function TheoryCards() {
               <Badge tone={a.inPlace ? 'good' : 'bad'}>{a.inPlace ? 'In-place' : 'Needs extra memory'}</Badge>
             </div>
 
-            <div className="rounded-lg bg-black/20 p-3 font-mono text-xs text-cyan-300 mb-3 overflow-x-auto whitespace-pre-wrap">
+            <div className="rounded-lg bg-neutral-100 border border-neutral-200 p-3 font-mono text-xs text-purple-700 font-semibold mb-3 overflow-x-auto whitespace-pre-wrap">
               {a.recurrence}
             </div>
 
-            <p className="text-sm text-slate-400 leading-relaxed">{a.theoremNote}</p>
+            <p className="text-sm text-neutral-600 leading-relaxed">{a.theoremNote}</p>
           </Card>
         ))}
       </div>
@@ -61,9 +61,9 @@ export function TheoryCards() {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <tr className="border-b border-arena-border/50">
-      <td className="py-1 pr-3 text-slate-500 w-32">{label}</td>
-      <td className="py-1 font-mono text-slate-200">{value}</td>
+    <tr className="border-b border-arena-border">
+      <td className="py-1.5 pr-3 text-neutral-500 w-32 font-medium">{label}</td>
+      <td className="py-1.5 font-mono text-neutral-800 font-medium">{value}</td>
     </tr>
   )
 }
