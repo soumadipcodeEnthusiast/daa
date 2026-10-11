@@ -1,13 +1,13 @@
-// Validated categorical palette (dark-mode steps), fixed order -- see dataviz skill.
+// Categorical palette: White primary bg, Black & Gold secondary, Purple tertiary
 export const SERIES_COLORS = [
-  '#3987e5', // blue
-  '#d95926', // orange
-  '#199e70', // aqua
-  '#c98500', // yellow
-  '#d55181', // magenta
-  '#9085e9', // violet
-  '#e66767', // red
-  '#4ade80', // green (sorted accent, used last)
+  '#C9A84C', // Gold
+  '#7C3AED', // Purple
+  '#171717', // Black
+  '#B8973B', // Dark Gold
+  '#9333EA', // Vivid Purple
+  '#525252', // Charcoal
+  '#D4AF37', // Metallic Gold
+  '#6D28D9', // Deep Purple
 ]
 
 export function colorForIndex(i: number) {

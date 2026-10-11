@@ -1,43 +1,43 @@
 import { createContext, useCallback, useContext, useState, type ReactNode } from 'react'
 
+type ToastVariant = 'info' | 'error' | 'success'
+
 interface Toast {
   id: number
   message: string
-  variant: 'error' | 'info' | 'success'
+  variant: ToastVariant
 }
 
 interface ToastContextValue {
-  push: (message: string, variant?: Toast['variant']) => void
+  push: (message: string, variant?: ToastVariant) => void
 }
 
 const ToastContext = createContext<ToastContextValue | null>(null)
 
-let nextId = 1
-
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([])
 
-  const push = useCallback((message: string, variant: Toast['variant'] = 'error') => {
-    const id = nextId++
-    setToasts((t) => [...t, { id, message, variant }])
+  const push = useCallback((message: string, variant: ToastVariant = 'info') => {
+    const id = Date.now() + Math.random()
+    setToasts((prev) => [...prev, { id, message, variant }])
     setTimeout(() => {
-      setToasts((t) => t.filter((x) => x.id !== id))
-    }, 5000)
+      setToasts((prev) => prev.filter((t) => t.id !== id))
+    }, 3500)
   }, [])
 
   return (
     <ToastContext.Provider value={{ push }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm">
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={`rounded-lg border px-4 py-3 text-sm shadow-lg backdrop-blur-sm animate-[fadeIn_0.2s_ease-out] ${
+            className={`rounded-lg border px-4 py-3 text-sm shadow-md backdrop-blur-sm animate-[fadeIn_0.2s_ease-out] font-medium ${
               t.variant === 'error'
-                ? 'border-red-500/40 bg-red-950/80 text-red-200'
+                ? 'border-red-200 bg-red-50 text-red-900'
                 : t.variant === 'success'
-                  ? 'border-emerald-500/40 bg-emerald-950/80 text-emerald-200'
-                  : 'border-indigo-500/40 bg-indigo-950/80 text-indigo-200'
+                  ? 'border-[#C9A84C]/40 bg-[#fefbf3] text-[#8C6D23]'
+                  : 'border-purple-200 bg-purple-50 text-purple-900'
             }`}
           >
             {t.message}

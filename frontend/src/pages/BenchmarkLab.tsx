@@ -143,7 +143,7 @@ export function BenchmarkLab() {
       <Card className="mb-6">
         <div data-controls="true" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div>
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">Algorithms</label>
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">Algorithms</label>
             <div className="mt-2 flex flex-wrap gap-2">
               {sortAlgos.length === 0 &&
                 Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-8 w-24" />)}
@@ -153,10 +153,10 @@ export function BenchmarkLab() {
                   <button
                     key={a.id}
                     onClick={() => toggleAlgo(a.id)}
-                    className={`rounded-lg border px-3 py-1.5 text-sm transition ${
+                    className={`rounded-lg border px-3 py-1.5 text-sm transition font-medium ${
                       active
-                        ? 'border-indigo-400 bg-indigo-500/20 text-indigo-200'
-                        : 'border-arena-border bg-arena-panel2 text-slate-400 hover:text-slate-200'
+                        ? 'border-[#C9A84C] bg-[#C9A84C]/15 text-[#8C6D23]'
+                        : 'border-arena-border bg-white text-neutral-700 hover:text-black hover:border-neutral-400'
                     }`}
                   >
                     {a.name}
@@ -167,7 +167,7 @@ export function BenchmarkLab() {
           </div>
 
           <div>
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">Sizes (n)</label>
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">Sizes (n)</label>
             <div className="mt-2 flex flex-wrap gap-2">
               {PRESET_SIZES.map((s) => {
                 const active = sizes.includes(s)
@@ -175,10 +175,10 @@ export function BenchmarkLab() {
                   <button
                     key={s}
                     onClick={() => toggleSize(s)}
-                    className={`rounded-lg border px-2.5 py-1 text-xs font-mono transition ${
+                    className={`rounded-lg border px-2.5 py-1 text-xs font-mono transition font-medium ${
                       active
-                        ? 'border-cyan-400 bg-cyan-500/20 text-cyan-200'
-                        : 'border-arena-border bg-arena-panel2 text-slate-400 hover:text-slate-200'
+                        ? 'border-[#7C3AED] bg-[#7C3AED]/15 text-[#6D28D9]'
+                        : 'border-arena-border bg-white text-neutral-700 hover:text-black hover:border-neutral-400'
                     }`}
                   >
                     {s.toLocaleString()}
@@ -186,17 +186,17 @@ export function BenchmarkLab() {
                 )
               })}
             </div>
-            <p className="mt-2 text-xs text-slate-500">
+            <p className="mt-2 text-xs text-neutral-500">
               O(n^2) algorithms auto-skip above 20,000; everything auto-skips above 1,000,000.
             </p>
           </div>
 
           <div>
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">Input type</label>
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">Input type</label>
             <select
               value={inputType}
               onChange={(e) => setInputType(e.target.value as InputType)}
-              className="mt-2 w-full rounded-lg border border-arena-border bg-arena-panel2 px-3 py-2 text-sm text-slate-200"
+              className="mt-2 w-full rounded-lg border border-arena-border bg-white px-3 py-2 text-sm text-neutral-900 shadow-sm focus:border-[#C9A84C] focus:outline-none"
             >
               {INPUT_TYPES.map((t) => (
                 <option key={t.value} value={t.value}>
@@ -204,8 +204,8 @@ export function BenchmarkLab() {
                 </option>
               ))}
             </select>
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium mt-4 block">
-              Repetitions: <span className="text-slate-200 font-mono">{repetitions}</span>
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold mt-4 block">
+              Repetitions: <span className="text-neutral-900 font-mono font-bold">{repetitions}</span>
             </label>
             <input
               type="range"
@@ -221,10 +221,10 @@ export function BenchmarkLab() {
 
         <div className="mt-5 flex items-center gap-3">
           <Button onClick={runBenchmark} disabled={loading}>
-            {loading ? 'Running…' : '📊 Run Benchmark'}
+            {loading ? 'Running…' : 'Run Benchmark'}
           </Button>
           <Button variant="secondary" onClick={openHistory}>
-            🕘 History
+            History
           </Button>
         </div>
       </Card>
@@ -236,20 +236,20 @@ export function BenchmarkLab() {
           <Card className="mb-6" title="Time vs n (log-log)" subtitle="Dashed lines are theoretical references, anchored to the largest measured point.">
             <ResponsiveContainer width="100%" height={360}>
               <LineChart data={timeData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                <CartesianGrid stroke="#232b40" strokeDasharray="3 3" />
-                <XAxis dataKey="size" scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} />
-                <YAxis scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1e6).toFixed(1)}ms`} />
+                <CartesianGrid stroke="#e5e5e5" strokeDasharray="3 3" />
+                <XAxis dataKey="size" scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} />
+                <YAxis scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} tickFormatter={(v) => `${(v / 1e6).toFixed(1)}ms`} />
                 <RechartsTooltip
-                  contentStyle={{ background: '#121725', border: '1px solid #232b40', borderRadius: 8 }}
+                  contentStyle={{ background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: 8, color: '#171717', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.08)' }}
                   formatter={(value, name) => [`${(Number(value) / 1e6).toFixed(3)} ms`, labelFor(String(name), algorithms)]}
                 />
                 <RechartsLegend formatter={(name: string) => labelFor(name, algorithms)} />
                 {legendKeys.map((algId, idx) => (
                   <Line key={algId} dataKey={algId} stroke={colorForIndex(idx)} strokeWidth={2} dot={false} connectNulls={false} />
                 ))}
-                <Line dataKey="refN" stroke="#6b7280" strokeDasharray="4 3" strokeWidth={1.5} dot={false} name={complexityLabels.n} />
-                <Line dataKey="refNLogN" stroke="#9ca3af" strokeDasharray="2 2" strokeWidth={1.5} dot={false} name={complexityLabels.nlogn} />
-                <Line dataKey="refN2" stroke="#d1d5db" strokeDasharray="6 2" strokeWidth={1.5} dot={false} name={complexityLabels.n2} />
+                <Line dataKey="refN" stroke="#737373" strokeDasharray="4 3" strokeWidth={1.5} dot={false} name={complexityLabels.n} />
+                <Line dataKey="refNLogN" stroke="#a3a3a3" strokeDasharray="2 2" strokeWidth={1.5} dot={false} name={complexityLabels.nlogn} />
+                <Line dataKey="refN2" stroke="#d4d4d4" strokeDasharray="6 2" strokeWidth={1.5} dot={false} name={complexityLabels.n2} />
               </LineChart>
             </ResponsiveContainer>
           </Card>
@@ -257,20 +257,20 @@ export function BenchmarkLab() {
           <Card className="mb-6" title="Comparisons vs n (log-log)">
             <ResponsiveContainer width="100%" height={360}>
               <LineChart data={compareData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                <CartesianGrid stroke="#232b40" strokeDasharray="3 3" />
-                <XAxis dataKey="size" scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} />
-                <YAxis scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} />
+                <CartesianGrid stroke="#e5e5e5" strokeDasharray="3 3" />
+                <XAxis dataKey="size" scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} />
+                <YAxis scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} />
                 <RechartsTooltip
-                  contentStyle={{ background: '#121725', border: '1px solid #232b40', borderRadius: 8 }}
+                  contentStyle={{ background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: 8, color: '#171717', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.08)' }}
                   formatter={(value, name) => [Number(value).toLocaleString(), labelFor(String(name), algorithms)]}
                 />
                 <RechartsLegend formatter={(name: string) => labelFor(name, algorithms)} />
                 {legendKeys.map((algId, idx) => (
                   <Line key={algId} dataKey={algId} stroke={colorForIndex(idx)} strokeWidth={2} dot={false} connectNulls={false} />
                 ))}
-                <Line dataKey="refN" stroke="#6b7280" strokeDasharray="4 3" strokeWidth={1.5} dot={false} />
-                <Line dataKey="refNLogN" stroke="#9ca3af" strokeDasharray="2 2" strokeWidth={1.5} dot={false} />
-                <Line dataKey="refN2" stroke="#d1d5db" strokeDasharray="6 2" strokeWidth={1.5} dot={false} />
+                <Line dataKey="refN" stroke="#737373" strokeDasharray="4 3" strokeWidth={1.5} dot={false} />
+                <Line dataKey="refNLogN" stroke="#a3a3a3" strokeDasharray="2 2" strokeWidth={1.5} dot={false} />
+                <Line dataKey="refN2" stroke="#d4d4d4" strokeDasharray="6 2" strokeWidth={1.5} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </Card>
@@ -279,25 +279,25 @@ export function BenchmarkLab() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-slate-500 border-b border-arena-border">
-                    <th className="py-2 pr-4">Algorithm</th>
-                    <th className="py-2 pr-4">n</th>
-                    <th className="py-2 pr-4">Median time</th>
-                    <th className="py-2 pr-4">Comparisons</th>
-                    <th className="py-2 pr-4">Status</th>
+                  <tr className="text-left text-neutral-500 border-b border-arena-border">
+                    <th className="py-2 pr-4 font-semibold">Algorithm</th>
+                    <th className="py-2 pr-4 font-semibold">n</th>
+                    <th className="py-2 pr-4 font-semibold">Median time</th>
+                    <th className="py-2 pr-4 font-semibold">Comparisons</th>
+                    <th className="py-2 pr-4 font-semibold">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {series.flatMap((s) =>
                     s.points.map((p) => (
-                      <tr key={`${s.algorithm}-${p.size}`} className="border-b border-arena-border/50">
-                        <td className="py-1.5 pr-4">{labelFor(s.algorithm, algorithms)}</td>
-                        <td className="py-1.5 pr-4 font-mono">{p.size.toLocaleString()}</td>
-                        <td className="py-1.5 pr-4 font-mono">
+                      <tr key={`${s.algorithm}-${p.size}`} className="border-b border-arena-border">
+                        <td className="py-2 pr-4 font-medium text-neutral-900">{labelFor(s.algorithm, algorithms)}</td>
+                        <td className="py-2 pr-4 font-mono text-neutral-700">{p.size.toLocaleString()}</td>
+                        <td className="py-2 pr-4 font-mono text-neutral-700">
                           {p.skipped ? '—' : `${(p.medianNanos / 1e6).toFixed(3)} ms`}
                         </td>
-                        <td className="py-1.5 pr-4 font-mono">{p.skipped ? '—' : p.comparisons.toLocaleString()}</td>
-                        <td className="py-1.5 pr-4">
+                        <td className="py-2 pr-4 font-mono text-neutral-700">{p.skipped ? '—' : p.comparisons.toLocaleString()}</td>
+                        <td className="py-2 pr-4">
                           {p.skipped ? <Badge tone="bad">Skipped</Badge> : <Badge tone="good">Measured</Badge>}
                         </td>
                       </tr>
@@ -311,24 +311,24 @@ export function BenchmarkLab() {
       )}
 
       {historyOpen && (
-        <div className="fixed inset-0 z-40 flex justify-end bg-black/50" onClick={() => setHistoryOpen(false)}>
+        <div className="fixed inset-0 z-40 flex justify-end bg-black/30 backdrop-blur-xs" onClick={() => setHistoryOpen(false)}>
           <div
-            className="w-full max-w-md h-full bg-arena-panel border-l border-arena-border p-5 overflow-y-auto"
+            className="w-full max-w-md h-full bg-white border-l border-arena-border p-5 overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Benchmark history</h3>
-              <Button variant="ghost" onClick={() => setHistoryOpen(false)}>✕</Button>
+              <h3 className="text-lg font-semibold text-neutral-900">Benchmark history</h3>
+              <Button variant="ghost" onClick={() => setHistoryOpen(false)}>Close</Button>
             </div>
             <div className="space-y-2">
-              {history.length === 0 && <p className="text-slate-500 text-sm">No runs recorded yet.</p>}
+              {history.length === 0 && <p className="text-neutral-500 text-sm">No runs recorded yet.</p>}
               {history.map((h) => (
-                <div key={h.id} className="rounded-lg border border-arena-border bg-arena-panel2 p-3 text-sm">
+                <div key={h.id} className="rounded-lg border border-arena-border bg-neutral-50 p-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="font-medium">{labelFor(h.algorithm, algorithms)}</span>
-                    <span className="text-slate-500 text-xs">{new Date(h.timestamp).toLocaleTimeString()}</span>
+                    <span className="font-semibold text-neutral-900">{labelFor(h.algorithm, algorithms)}</span>
+                    <span className="text-neutral-500 text-xs">{new Date(h.timestamp).toLocaleTimeString()}</span>
                   </div>
-                  <div className="text-slate-400 text-xs mt-1">
+                  <div className="text-neutral-600 text-xs mt-1">
                     n={h.size.toLocaleString()} · {h.inputType} · {(h.medianNanos / 1e6).toFixed(3)} ms · {h.comparisons.toLocaleString()} comparisons
                   </div>
                 </div>

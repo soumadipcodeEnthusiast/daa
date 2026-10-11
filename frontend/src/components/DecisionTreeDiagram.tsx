@@ -75,7 +75,7 @@ export function DecisionTreeDiagram() {
             y1={a.y + 12}
             x2={b.x}
             y2={b.y - 12}
-            stroke={onPath ? '#6366f1' : '#2a3148'}
+            stroke={onPath ? '#C9A84C' : '#e5e5e5'}
             strokeWidth={onPath ? 2.5 : 1.5}
           />
         )
@@ -91,8 +91,8 @@ export function DecisionTreeDiagram() {
               width={n.isLeaf ? 64 : 72}
               height={24}
               rx={6}
-              fill={isActiveLeaf ? '#4ade80' : n.isLeaf ? '#161c2d' : onPath ? '#1e2538' : '#121725'}
-              stroke={onPath ? '#6366f1' : '#232b40'}
+              fill={isActiveLeaf ? '#C9A84C' : n.isLeaf ? '#ffffff' : onPath ? '#fdf8ea' : '#f5f5f5'}
+              stroke={isActiveLeaf ? '#C9A84C' : onPath ? '#C9A84C' : '#e0e0e0'}
               strokeWidth={1.5}
               animate={isActiveLeaf ? { scale: [1, 1.08, 1] } : {}}
               transition={{ duration: 0.6, repeat: isActiveLeaf ? Infinity : 0 }}
@@ -103,7 +103,8 @@ export function DecisionTreeDiagram() {
               textAnchor="middle"
               fontSize={11}
               fontFamily="ui-monospace, monospace"
-              fill={isActiveLeaf ? '#052e16' : '#cbd5e1'}
+              fontWeight={isActiveLeaf || onPath ? '600' : '400'}
+              fill={isActiveLeaf ? '#000000' : '#171717'}
             >
               {n.label}
             </text>

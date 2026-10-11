@@ -74,7 +74,7 @@ export function LowerBoundVisualizer() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <Card className="lg:col-span-2" title="Measured comparisons vs. the information-theoretic bound">
           <Button onClick={run} disabled={loading} className="mb-4">
-            {loading ? 'Running…' : '📐 Measure comparisons for n = 4..2000'}
+            {loading ? 'Running…' : 'Measure comparisons for n = 4..2000'}
           </Button>
 
           {loading && <Skeleton className="h-80" />}
@@ -82,44 +82,46 @@ export function LowerBoundVisualizer() {
           {series && !loading && (
             <ResponsiveContainer width="100%" height={340}>
               <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                <CartesianGrid stroke="#232b40" strokeDasharray="3 3" />
-                <XAxis dataKey="size" scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} />
-                <YAxis scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} />
-                <RechartsTooltip contentStyle={{ background: '#121725', border: '1px solid #232b40', borderRadius: 8 }} />
+                <CartesianGrid stroke="#e5e5e5" strokeDasharray="3 3" />
+                <XAxis dataKey="size" scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} />
+                <YAxis scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} />
+                <RechartsTooltip
+                  contentStyle={{ background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: 8, color: '#171717', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.08)' }}
+                />
                 <RechartsLegend />
                 {ALGORITHMS.map((alg, idx) => (
                   <Line key={alg} dataKey={alg} name={alg} stroke={colorForIndex(idx)} strokeWidth={2} dot={false} connectNulls />
                 ))}
-                <Line dataKey="log2Factorial" name="log2(n!)  [lower bound]" stroke="#e66767" strokeDasharray="6 2" strokeWidth={2} dot={false} />
-                <Line dataKey="nlogn" name="n·log2(n)" stroke="#9ca3af" strokeDasharray="2 2" strokeWidth={1.5} dot={false} />
+                <Line dataKey="log2Factorial" name="log2(n!)  [lower bound]" stroke="#7C3AED" strokeDasharray="6 2" strokeWidth={2} dot={false} />
+                <Line dataKey="nlogn" name="n·log2(n)" stroke="#a3a3a3" strokeDasharray="2 2" strokeWidth={1.5} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           )}
 
           {!series && !loading && (
-            <div className="text-center text-slate-500 py-16">Run the measurement to see real algorithms sit above the bound.</div>
+            <div className="text-center text-neutral-500 py-16 font-medium">Run the measurement to see real algorithms sit above the bound.</div>
           )}
         </Card>
 
         <Card title="Proof sketch">
-          <ol className="text-sm text-slate-300 space-y-3 list-decimal pl-4">
+          <ol className="text-sm text-neutral-700 space-y-3 list-decimal pl-4 leading-relaxed">
             <li>
-              Model any comparison-based sort as a <span className="text-indigo-300">decision tree</span>: each
+              Model any comparison-based sort as a <span className="text-[#8C6D23] font-semibold">decision tree</span>: each
               internal node is one comparison, each leaf is one output permutation.
             </li>
             <li>
-              Sorting n distinct elements must produce all <span className="font-mono text-cyan-300">n!</span>{' '}
-              possible orderings, so the tree needs <span className="font-mono text-cyan-300">n!</span> leaves.
+              Sorting n distinct elements must produce all <span className="font-mono text-[#7C3AED] font-semibold">n!</span>{' '}
+              possible orderings, so the tree needs <span className="font-mono text-[#7C3AED] font-semibold">n!</span> leaves.
             </li>
             <li>
               A binary tree of height h has at most 2<sup>h</sup> leaves, so{' '}
-              <span className="font-mono text-cyan-300">2^h &ge; n!</span>, i.e.{' '}
-              <span className="font-mono text-cyan-300">h &ge; log2(n!)</span>.
+              <span className="font-mono text-[#7C3AED] font-semibold">2^h &ge; n!</span>, i.e.{' '}
+              <span className="font-mono text-[#7C3AED] font-semibold">h &ge; log2(n!)</span>.
             </li>
             <li>
-              By Stirling's approximation, <span className="font-mono text-cyan-300">log2(n!) = Theta(n log n)</span>.
+              By Stirling's approximation, <span className="font-mono text-[#7C3AED] font-semibold">log2(n!) = Theta(n log n)</span>.
               The tree's height is a lower bound on worst-case comparisons, so every comparison sort is{' '}
-              <span className="text-indigo-300">Omega(n log n)</span> in the worst case.
+              <span className="text-[#8C6D23] font-semibold">Omega(n log n)</span> in the worst case.
             </li>
             <li>
               Counting sort and radix sort escape this because they never compare two elements -- see the next page.

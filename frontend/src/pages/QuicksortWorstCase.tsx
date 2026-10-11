@@ -70,17 +70,17 @@ export function QuicksortWorstCase() {
       />
 
       <Card className="mb-6">
-        <p className="text-sm text-slate-400 mb-4">
-          Both variants run on <span className="text-slate-200 font-medium">already-sorted</span> input of growing
+        <p className="text-sm text-neutral-700 mb-4 leading-relaxed">
+          Both variants run on <span className="text-black font-semibold">already-sorted</span> input of growing
           size. First-element pivot always picks the smallest remaining element, so every partition splits into
           sizes 0 and n-1 -- the textbook degenerate case. The dashed lines are not fitted to the data: they are the
           literal closed-form predictions{' '}
-          <span className="font-mono text-cyan-300">n(n-1)/2</span> (exact worst case) and{' '}
-          <span className="font-mono text-cyan-300">1.39 · n · log2(n)</span> (expected comparisons for a random
+          <span className="font-mono text-purple-700 font-semibold">n(n-1)/2</span> (exact worst case) and{' '}
+          <span className="font-mono text-purple-700 font-semibold">1.39 · n · log2(n)</span> (expected comparisons for a random
           pivot), plotted directly.
         </p>
         <Button onClick={run} disabled={loading}>
-          {loading ? 'Running…' : '⚡ Run on sorted input, n up to 20,000'}
+          {loading ? 'Running…' : 'Run on sorted input, n up to 20,000'}
         </Button>
       </Card>
 
@@ -90,22 +90,22 @@ export function QuicksortWorstCase() {
         <Card title="Comparisons vs n (log-log)">
           <ResponsiveContainer width="100%" height={380}>
             <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-              <CartesianGrid stroke="#232b40" strokeDasharray="3 3" />
-              <XAxis dataKey="size" scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} />
-              <YAxis scale="log" domain={['auto', 'auto']} type="number" stroke="#64748b" tick={{ fontSize: 11 }} />
+              <CartesianGrid stroke="#e5e5e5" strokeDasharray="3 3" />
+              <XAxis dataKey="size" scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} />
+              <YAxis scale="log" domain={['auto', 'auto']} type="number" stroke="#737373" tick={{ fontSize: 11 }} />
               <RechartsTooltip
-                contentStyle={{ background: '#121725', border: '1px solid #232b40', borderRadius: 8 }}
+                contentStyle={{ background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: 8, color: '#171717', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.08)' }}
                 formatter={(value) => Number(value).toLocaleString()}
               />
               <RechartsLegend />
               <Line dataKey="quick-first" name="Quicksort (first pivot)" stroke={colorForIndex(1)} strokeWidth={2} dot connectNulls />
               <Line dataKey="quick-random" name="Quicksort (random pivot)" stroke={colorForIndex(0)} strokeWidth={2} dot connectNulls />
-              <Line dataKey="exactWorstCase" name="n(n-1)/2  [exact worst case]" stroke="#e66767" strokeDasharray="6 2" strokeWidth={1.5} dot={false} />
-              <Line dataKey="expectedRandom" name="1.39·n·log2(n)  [expected]" stroke="#9ca3af" strokeDasharray="2 2" strokeWidth={1.5} dot={false} />
+              <Line dataKey="exactWorstCase" name="n(n-1)/2  [exact worst case]" stroke="#7C3AED" strokeDasharray="6 2" strokeWidth={1.5} dot={false} />
+              <Line dataKey="expectedRandom" name="1.39·n·log2(n)  [expected]" stroke="#a3a3a3" strokeDasharray="2 2" strokeWidth={1.5} dot={false} />
             </LineChart>
           </ResponsiveContainer>
-          <p className="mt-3 text-xs text-slate-500">
-            If the solid "first pivot" line sits almost exactly on the red dashed line, and the "random pivot" line
+          <p className="mt-3 text-xs text-neutral-500">
+            If the solid "first pivot" line sits almost exactly on the purple dashed line, and the "random pivot" line
             sits almost exactly on the gray dashed line, the theory isn't just asymptotically right -- the constants
             match too.
           </p>

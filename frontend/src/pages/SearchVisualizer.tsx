@@ -64,8 +64,8 @@ export function SearchVisualizer() {
       <Card className="mb-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div>
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">
-              Size: <span className="text-slate-200 font-mono">{size}</span>
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">
+              Size: <span className="text-neutral-900 font-mono font-bold">{size}</span>
             </label>
             <input
               type="range"
@@ -79,17 +79,17 @@ export function SearchVisualizer() {
             />
           </div>
           <div>
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">Target</label>
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">Target</label>
             <input
               type="number"
               value={target}
               onChange={(e) => setTarget(Number(e.target.value))}
-              className="mt-2 w-full rounded-lg border border-arena-border bg-arena-panel2 px-3 py-2 text-sm text-slate-200"
+              className="mt-2 w-full rounded-lg border border-arena-border bg-white px-3 py-2 text-sm text-neutral-900 shadow-sm focus:border-[#C9A84C] focus:outline-none"
             />
           </div>
           <div>
-            <label className="text-xs uppercase tracking-wide text-slate-500 font-medium">
-              Speed: <span className="text-slate-200 font-mono">{speedMs}ms/step</span>
+            <label className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">
+              Speed: <span className="text-neutral-900 font-mono font-bold">{speedMs}ms/step</span>
             </label>
             <input
               type="range"
@@ -102,28 +102,28 @@ export function SearchVisualizer() {
           </div>
           <div className="flex flex-col gap-2 justify-end">
             <Button variant="secondary" onClick={() => regenerate(true)}>
-              🎲 New array (target present)
+              New array (target present)
             </Button>
             <Button variant="secondary" onClick={() => regenerate(false)}>
-              🎲 New array (target absent)
+              New array (target absent)
             </Button>
           </div>
         </div>
 
         <div className="mt-5 flex items-center gap-3">
           <Button onClick={run} disabled={loading}>
-            {loading ? 'Searching…' : '🔍 Run Search'}
+            {loading ? 'Searching…' : 'Run Search'}
           </Button>
           {stepsByAlgorithm && (
             <>
               <Button variant="secondary" onClick={engine.playing ? engine.pause : engine.play} disabled={engine.allFinished}>
-                {engine.playing ? '⏸ Pause' : '▶ Play'}
+                {engine.playing ? 'Pause' : 'Play'}
               </Button>
               <Button variant="secondary" onClick={engine.step} disabled={engine.playing || engine.allFinished}>
-                ⏭ Step
+                Step
               </Button>
               <Button variant="secondary" onClick={engine.reset}>
-                ↺ Reset
+                Reset
               </Button>
             </>
           )}
@@ -152,21 +152,21 @@ const NAMES: Record<string, string> = { 'linear-search': 'Linear Search', 'binar
 
 function SearchPanel({ state, array, maxValue }: { state: SearchPanelState; array: number[]; maxValue: number }) {
   return (
-    <div className="rounded-xl border border-arena-border bg-arena-panel2/60 p-4 flex flex-col gap-3">
+    <div className="rounded-xl border border-arena-border bg-white shadow-sm p-4 flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="font-semibold text-slate-100">{NAMES[state.algorithm] ?? state.algorithm}</span>
+        <span className="font-semibold text-neutral-900">{NAMES[state.algorithm] ?? state.algorithm}</span>
         {state.foundIndex !== null && <Badge tone="good">Found at index {state.foundIndex}</Badge>}
         {state.exhausted && <Badge tone="bad">Not found</Badge>}
       </div>
 
-      <div className="h-36 flex items-end gap-[2px] bg-black/20 rounded-lg p-1.5 overflow-hidden">
+      <div className="h-36 flex items-end gap-[2px] bg-neutral-100 border border-neutral-200 rounded-lg p-1.5 overflow-hidden">
         {array.map((value, idx) => {
           const inRange = state.rangeLo !== null && idx >= state.rangeLo && idx <= (state.rangeHi ?? -1)
           const isMid = idx === state.rangeMid
           const isCompare = idx === state.compareIndex
           const isFound = idx === state.foundIndex
-          let colorClass = 'bg-slate-700'
-          if (state.algorithm === 'binary-search' && inRange) colorClass = 'bg-slate-500'
+          let colorClass = 'bg-neutral-300'
+          if (state.algorithm === 'binary-search' && inRange) colorClass = 'bg-[#C9A84C]/40'
           if (isMid) colorClass = 'bg-arena-pivot'
           if (isCompare) colorClass = 'bg-arena-compare'
           if (isFound) colorClass = 'bg-arena-sorted'
@@ -182,15 +182,15 @@ function SearchPanel({ state, array, maxValue }: { state: SearchPanelState; arra
       </div>
 
       <div className="grid grid-cols-2 gap-2 text-xs">
-        <div className="rounded-lg bg-black/20 px-2 py-1.5 text-center">
-          <div className="font-mono text-sm font-semibold text-slate-100">{state.comparisons}</div>
-          <div className="text-[10px] uppercase tracking-wide text-slate-500">Comparisons</div>
+        <div className="rounded-lg bg-neutral-50 border border-neutral-200 px-2 py-1.5 text-center">
+          <div className="font-mono text-sm font-semibold text-neutral-900">{state.comparisons}</div>
+          <div className="text-[10px] uppercase tracking-wide text-neutral-500 font-medium">Comparisons</div>
         </div>
-        <div className="rounded-lg bg-black/20 px-2 py-1.5 text-center">
-          <div className="font-mono text-sm font-semibold text-slate-100">
+        <div className="rounded-lg bg-neutral-50 border border-neutral-200 px-2 py-1.5 text-center">
+          <div className="font-mono text-sm font-semibold text-neutral-900">
             {state.pointer}/{state.totalSteps}
           </div>
-          <div className="text-[10px] uppercase tracking-wide text-slate-500">Steps</div>
+          <div className="text-[10px] uppercase tracking-wide text-neutral-500 font-medium">Steps</div>
         </div>
       </div>
     </div>
