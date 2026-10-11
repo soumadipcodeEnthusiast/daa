@@ -1,8 +1,30 @@
+# Maven & Java
 target/
 *.class
-.DS_Store
+*.jar
+*.war
+.mvn/
+mvnw
+mvnw.cmd
+
+# Node & Frontend
 node_modules/
 dist/
-frontend/dist/
+.vite/
+*.local
+
+# IDEs
 .idea/
 *.iml
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment & Logs
+.env
+*.log
+logs/
