@@ -1,160 +1,83 @@
-# Sorting & Searching Race Arena
+# Code Reverse
 
-A Design & Analysis of Algorithms showcase: 8 hand-written sort algorithms (plus a
-JDK baseline) and 2 search algorithms, each instrumented with comparison/swap/write
-counters and a step-by-step trace, served by a Spring Boot API and animated live by
-a React frontend.
+A static analysis and reverse-engineering tool for Java source code. **Code Reverse** inspects Java source files—whether uploaded directly as `.java` files, compressed in `.zip` archives, or fetched from public GitHub repositories—and automatically identifies:
+
+1. **Which algorithms and data structures are used** (Sorting, Searching, Graph Traversal, Dynamic Programming, Heaps, HashMaps, Two Pointers, etc.)
+2. **Where they are located** (file path, enclosing method, exact line ranges)
+3. **Why it was detected** (concrete evidence from AST structure and code signals)
+4. **Estimated asymptotic time complexity** ($O(n \log n)$, $O(\log n)$, $O(n^2)$, $O(V + E)$, etc.)
+5. **Detailed, downloadable Markdown reports**
+
+---
 
 ## Architecture
 
 ```
-┌─────────────────────────────┐         ┌──────────────────────────────────────┐
-│   Browser (localhost:5173   │  HTTP   │     Spring Boot backend :8080         │
-│   dev, or :3000 via Docker) │ ──────► │                                        │
-│                              │  /api/* │  Controllers                          │
-│  React + Vite + TS           │         │   /algorithms /trace /race /benchmark │
-│  Tailwind, Recharts,         │ ◄────── │   /search /history                    │
-│  Framer Motion                │  JSON  │       │                               │
-│                              │         │  AlgorithmRegistry ─ InputGenerator   │
-│  Race Arena · Benchmark Lab  │         │       │                               │
-│  Lower-Bound · Counting-vs-  │         │  SortAlgorithm impls (bubble,         │
-│  bound · Quicksort worst     │         │  insertion, merge, quicksort x2,      │
-│  case · Theory Cards ·       │         │  heap, counting, radix, baseline)     │
-│  Search Visualizer            │         │  SearchAlgorithm impls (linear,       │
-│                              │         │  binary) -- all via TraceRecorder     │
-│                              │         │       │                               │
-│                              │         │  BenchmarkService ─► H2 (in-memory)   │
-└─────────────────────────────┘         └──────────────────────────────────────┘
+┌────────────────────────────────────────┐         ┌────────────────────────────────────────┐
+│     Frontend UI (localhost:5173)       │  HTTP   │      Spring Boot Backend (:8095)       │
+│                                        │ ──────► │                                        │
+│  React 19 + TypeScript + Vite          │  /api/* │  Pipeline:                             │
+│  Tailwind CSS + Custom Design System   │         │   1. IngestService (File/Zip/Git)      │
+│  - Mode Selection (File / GitHub)      │ ◄────── │   2. ParserService (JavaParser AST)    │
+│  - 1-Click Demo Showcase Loader        │  JSON   │   3. 10 Algorithm Detectors            │
+│  - Structured Findings & Complexity    │         │   4. ComplexityService (Estimations)   │
+│  - Markdown Export                     │         │   5. ReportService (LRU Store & MD)    │
+└────────────────────────────────────────┘         └────────────────────────────────────────┘
 ```
 
-In Docker, the frontend container is nginx serving the built static files and
-reverse-proxying `/api/*` to the backend container over the internal compose
-network (`frontend/nginx.conf`); in local dev, Vite's dev server does the same
-proxying to `localhost:8080` (`frontend/vite.config.ts`).
+---
 
-## Run it
+## Supported Detectors
 
-### Option A: Docker Compose (everything, one command)
+| Category | Algorithm / Structure | Complexity | Detection Signals |
+|---|---|---|---|
+| **Divide & Conquer** | Quick Sort | $O(n \log n)$ avg, $O(n^2)$ worst | Pivot partitioning, recursive array division |
+| **Divide & Conquer** | Merge Sort | $O(n \log n)$ | Midpoint division, sub-array recursive merge |
+| **Searching** | Binary Search | $O(\log n)$ | Boundary mid calculation, low/high interval halving |
+| **Pointers** | Two Pointers | $O(n)$ | Opposing left/right indices convergence |
+| **Sorting** | Bubble Sort | $O(n^2)$ | Nested loops with adjacent element swapping |
+| **Sorting** | Insertion Sort | $O(n^2)$ | Key insertion into sorted prefix with element shifting |
+| **Graph Traversal** | Breadth-First Search (BFS) | $O(V + E)$ | Queue-driven node expansion, visited state set/array |
+| **Graph Traversal** | Depth-First Search (DFS) | $O(V + E)$ | Recursive graph/tree traversal, visited tracking |
+| **Dynamic Prog.** | DP (Tabulation & Memoization) | Variable ($O(m \cdot n)$, etc.) | Multi-dimensional DP tables, recursive state memoization |
+| **Data Structures** | Core Collections | $O(1)$ / $O(\log n)$ | PriorityQueue (Min/Max Heaps), HashMap, TreeMap, Sets |
+
+---
+
+## Quick Start
+
+### Prerequisites
+* **Java 21** or later
+* **Maven 3.8+**
+* **Node.js 18+** and **npm**
+
+### 1. Run the Backend
 
 ```bash
-docker compose up --build
-```
-
-- Frontend: http://localhost:3000
-- Backend: http://localhost:8080 (H2 console at `/h2-console`, JDBC URL `jdbc:h2:mem:racearena`)
-
-First boot downloads Maven/npm dependencies inside the build stages, which can take
-several minutes depending on your network and how busy the machine is -- that's a
-one-time cost; the Spring Boot startup banner itself ("Started RaceArenaApplication
-in ...") is what tells you the backend is actually ready. If port 8080 or 3000 is
-already taken by something else on your machine, change the left-hand side of the
-`ports:` mapping in `docker-compose.yml`.
-
-### Option B: Local dev (hot reload, backend in Docker or local)
-
-```bash
-# Backend (needs JDK 21 -- `java -version` should say 21; on macOS with
-# Homebrew, `export JAVA_HOME=$(brew --prefix openjdk@21)/libexec/openjdk.jdk/Contents/Home`)
 cd backend
+mvn clean test
 mvn spring-boot:run
+```
+The backend starts on `http://localhost:8095`.
 
-# Frontend, in another terminal
+### 2. Run the Frontend
+
+```bash
 cd frontend
 npm install
 npm run dev
 ```
+Open `http://localhost:5173` in your browser.
 
-Open http://localhost:5173. The Vite dev server proxies `/api` to
-`http://localhost:8080`, so this also works unchanged if the backend is running in
-Docker (`docker compose up backend`) instead of locally -- just leave the frontend
-on `npm run dev`. If something else on your machine already holds port 8080, run
-the backend with `--server.port=<port>` and point the frontend at it with
-`BACKEND_PORT=<port> npm run dev`.
+---
 
-### Running the backend tests
+## Sample Demo File
 
-```bash
-cd backend
-mvn test
-```
+A self-contained showcase Java file containing implementations of classical algorithms is provided at [`DemoAlgorithms.java`](DemoAlgorithms.java). You can either upload it manually in the web UI or click the **"Load Demo Sample"** button on the interface to test all 10 detectors with a single click.
 
-96 JUnit 5 tests: correctness on empty/single/duplicate/negative/sorted/reversed
-input across every algorithm, plus a behavioral stability proof (not just the
-hardcoded metadata flag) for bubble, insertion, merge, counting and radix sort.
+---
 
-## Project layout
+## API Endpoints
 
-```
-backend/   Spring Boot 3 / Java 21 / Maven -- algorithms, REST API, H2, tests
-frontend/  React 19 / Vite / TypeScript / Tailwind / Recharts / Framer Motion
-docker-compose.yml, backend/Dockerfile, frontend/Dockerfile, frontend/nginx.conf
-```
-
-## API
-
-| Endpoint | Method | Purpose |
-|---|---|---|
-| `/api/algorithms` | GET | Complexity/stability metadata for every algorithm |
-| `/api/trace` | POST | Full step trace for one algorithm (array capped at 200) |
-| `/api/race` | POST | One shared input, traces for 2-4 algorithms side by side (size capped at 100) |
-| `/api/benchmark` | POST | Real timing at large n, JIT warm-up + median of repetitions, saved to H2 |
-| `/api/history` | GET | Last 20 benchmark runs |
-| `/api/search` | POST | Linear/binary search trace |
-
-## Presenting it
-
-- **Presentation Mode** (top-right button) drops the sidebar, enlarges headings,
-  and hides the dense multi-input configuration panels on Race Arena and
-  Benchmark Lab, leaving just the chart/animation and the action buttons visible.
-- **Guided Demo** (top-right button) drives a scripted, presenter-paced 5-step
-  walkthrough: it navigates to the right page, auto-configures and auto-runs
-  each one, and shows a caption bar at the bottom with Prev/Next/Exit. You
-  advance it manually while you talk, so it never gets ahead of (or behind) you.
-
-## 5-minute speaking script (matches the Guided Demo)
-
-**Step 1 -- Race Arena (`/`): the race of O(n²) vs O(n log n)** *(~60s)*
-> "Here's bubble sort and merge sort, racing on the exact same random array of 40
-> numbers. Watch the comparisons counter on the left climb -- bubble sort is doing
-> roughly n² work, about 800 comparisons for 40 elements. Merge sort does maybe 150,
-> because it's n log n. They finish at completely different speeds even though
-> they're solving the identical problem."
-
-**Step 2 -- Lower-Bound Visualizer (`/lower-bound`): why O(n log n) is a floor** *(~70s)*
-> "This isn't a coincidence of these particular algorithms -- it's a hard limit.
-> Model any comparison-based sort as a decision tree: every comparison is a branch,
-> every leaf is one possible output order. Sorting n elements needs n! possible
-> leaves, so the tree's height -- which is the worst-case number of comparisons --
-> is at least log2(n!), which by Stirling's approximation is Theta(n log n). You can
-> see merge sort, heap sort, and randomized quicksort all measuring right at that
-> line, for n from 4 up to 2,000. And here's the actual decision tree for sorting
-> just 3 elements: 6 leaves, one per permutation, minimum height 3 -- exactly
-> ceil(log2(6))."
-
-**Step 3 -- Counting Sort Breaks the Bound (`/counting-breaks-bound`)** *(~60s)*
-> "So how does counting sort claim to be faster than the bound allows? It cheats --
-> in a good way. It never compares two elements against each other; it counts
-> occurrences per key and places them by prefix sum. No comparisons means the
-> Omega(n log n) argument doesn't apply at all. Here it is next to merge sort out to
-> a million elements, looking essentially linear. But look at the slider: that
-> speed is conditional on the key range k staying small. As I drag k up past a few
-> hundred thousand even at a modest n, the O(n+k) term takes over and both the time
-> and the memory blow up -- that's the tradeoff you're actually paying for."
-
-**Step 4 -- Quicksort Worst Case (`/quicksort-worst-case`)** *(~60s)*
-> "Last one: quicksort's worst case isn't really about quicksort, it's about pivot
-> selection. Both of these are the same algorithm, run on the same already-sorted
-> input. The first-element-pivot version always picks the smallest remaining
-> element as pivot, so every partition splits into sizes 0 and n-1 -- that's the
-> classic adversarial O(n²) case, and you can see its comparison count land almost
-> exactly on n(n-1)/2. Randomize the pivot choice -- one line of code -- and the
-> same input now costs about 1.39·n·log2(n) comparisons in expectation, which is
-> what you see the random-pivot line tracking."
-
-**Step 5 -- Summary** *(~30s)*
-> "Three takeaways: comparison sorts have a real, provable floor at Omega(n log n).
-> Non-comparison sorts can beat that floor, but only by trading it for a dependence
-> on the key range. And a worst case is often a property of a design decision --
-> like which element you pick as pivot -- not an inherent property of the
-> algorithm itself. Everything on these slides was measured live against the
-> theory, not asserted."
+* `POST /api/algolens/analyze` — Multipart (`file` or `githubUrl`) or JSON payload returning full analysis report.
+* `GET /api/algolens/report/{id}/markdown` — Downloads the generated Markdown report.

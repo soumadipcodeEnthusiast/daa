@@ -1,4 +1,4 @@
-# Contributing to DAA Sorting & Searching Race Arena
+# Contributing to Code Reverse
 
 Thank you for your interest in contributing!
 

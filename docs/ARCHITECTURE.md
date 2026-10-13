@@ -1,17 +1,30 @@
-# Architecture & Trace Pipeline
+# Architecture & Pipeline
 
-## System Layers
-
-1. **Frontend (SPA)**: React 19 + TypeScript + Vite + Tailwind CSS + Recharts
-2. **REST API**: Spring Boot 3 running on Java 21
-3. **Trace Engine**: `TraceRecorder` intercepts comparison, swap, and write events
-4. **Data Persistence**: H2 in-memory relational database storing benchmark history
-
-## Data Flow Pipeline
+Code Reverse uses a multi-stage static analysis pipeline designed to inspect code synchronously without database overhead.
 
 ```
-User Action -> Frontend API Client -> Spring Boot Controller -> Algorithm Execution
-                                                                        |
-                                                                        v
-Screen Animation <- State Array Replay <- JSON Step Traces <- TraceRecorder
+Input (File / Zip / GitHub)
+          │
+          ▼
+   1. Ingestion Stage (IngestService)
+      - Unpacks zips, clones shallow git repos via JGit, or handles single .java
+          │
+          ▼
+   2. AST Parsing Stage (ParserService)
+      - JavaParser generates Abstract Syntax Trees
+      - Extracts methods, line ranges, class structures, and tokens
+          │
+          ▼
+   3. Detection Stage (10 AlgorithmDetector Implementations)
+      - Runs rule-based pattern matching over AST structures and control flows
+          │
+          ▼
+   4. Complexity Estimation (ComplexityService)
+      - Infers asymptotic upper and average bounds (Big-O) from AST loop depths and recursion
+          │
+          ▼
+   5. Reporting & Caching (ReportService)
+      - Synthesizes summary, notes, and uncertain sections
+      - In-memory LRU report caching (20 recent reports)
+      - Renders structured JSON and formatted Markdown
 ```

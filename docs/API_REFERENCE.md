@@ -1,22 +1,59 @@
-# REST API Reference
+# Code Reverse API Reference
 
-## Endpoints
+The backend exposes a REST API on port `8095` (or mapped port in reverse proxy).
 
-### 1. `GET /api/algorithms`
-Returns complexity and stability metadata for all sorting and searching algorithms.
+---
 
-### 2. `POST /api/trace`
-Generates step-by-step array state trace for a single algorithm.
-- Body: `{"algorithm": "merge", "array": [4, 2, 7, 1]}`
+## 1. `POST /api/algolens/analyze`
 
-### 3. `POST /api/race`
-Runs multiple algorithms side-by-side on identical generated inputs.
-- Body: `{"algorithms": ["bubble", "merge"], "size": 30, "inputType": "random"}`
+Executes the static AST analysis pipeline and generates a full algorithm report.
 
-### 4. `POST /api/benchmark`
-Runs repeated executions with JIT warm-up and median timing.
-- Body: `{"algorithms": ["quick-random", "heap"], "sizes": [100, 1000], "repetitions": 5}`
+### Request Formats
 
-### 5. `POST /api/search`
-Visualizes linear or binary search step trace.
-- Body: `{"algorithm": "binary-search", "array": [1, 3, 5, 7, 9], "target": 5}`
+#### A. Multipart Form Data (`multipart/form-data`)
+* `file` (optional, `MultipartFile`): Single `.java` file or a compressed `.zip` archive containing Java sources.
+* `githubUrl` (optional, query param / form field): Public GitHub repository HTTPS URL (e.g. `https://github.com/owner/repo`).
+
+#### B. JSON Body (`application/json`)
+```json
+{
+  "githubUrl": "https://github.com/owner/repo"
+}
+```
+
+### Response (`200 OK`)
+```json
+{
+  "id": "ef9f3912-fe68-4db3-971e-6e983e7b6683",
+  "projectName": "DemoAlgorithms",
+  "overview": "This project contains 1 Java source file. The analysis found 10 algorithm or data-structure patterns...",
+  "findings": [
+    {
+      "algorithm": "Quick Sort",
+      "file": "DemoAlgorithms.java",
+      "method": "quickSort",
+      "startLine": 14,
+      "endLine": 20,
+      "evidence": "Method name contains 'quick' or 'partition' with pivot/recursion signal.",
+      "confidence": 0.87,
+      "timeComplexity": "O(n log n) average, O(n^2) worst-case estimated",
+      "llmExplanation": null,
+      "llmConfirmed": true
+    }
+  ],
+  "notes": [
+    "DemoAlgorithms.java / bubbleSort: Bubble Sort is O(n^2). For large inputs, a merge sort or Collections.sort (Timsort, O(n log n)) would be faster."
+  ],
+  "uncertain": [],
+  "analyzedAtMs": 1791766435622
+}
+```
+
+---
+
+## 2. `GET /api/algolens/report/{id}/markdown`
+
+Downloads the generated report in GitHub-Flavored Markdown format.
+
+* **Response Header**: `Content-Disposition: attachment; filename="code-reverse-report-<id>.md"`
+* **Content-Type**: `text/plain`
