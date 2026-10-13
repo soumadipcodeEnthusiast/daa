@@ -1,14 +1,14 @@
-# Algorithm Complexity Reference
+# Asymptotic Complexity Reference
 
-| Algorithm | Best | Average | Worst | Space | Stable |
+| Algorithm / Pattern | Best Time | Average Time | Worst Time | Space | Notes |
 |---|---|---|---|---|---|
-| Bubble Sort | O(n) | O(n²) | O(n²) | O(1) | Yes |
-| Insertion Sort | O(n) | O(n²) | O(n²) | O(1) | Yes |
-| Merge Sort | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes |
-| Quick Sort (Random Pivot) | O(n log n) | O(n log n) | O(n²) | O(log n) | No |
-| Quick Sort (First Pivot) | O(n log n) | O(n log n) | O(n²) [Sorted input] | O(n) | No |
-| Heap Sort | O(n log n) | O(n log n) | O(n log n) | O(1) | No |
-| Counting Sort | O(n+k) | O(n+k) | O(n+k) | O(k) | Yes |
-| Radix Sort | O(nk) | O(nk) | O(nk) | O(n+k) | Yes |
-| Linear Search | O(1) | O(n) | O(n) | O(1) | - |
-| Binary Search | O(1) | O(log n) | O(log n) | O(1) | - |
+| **Binary Search** | $O(1)$ | $O(\log n)$ | $O(\log n)$ | $O(1)$ | Requires monotonic/sorted domain |
+| **Two Pointers** | $O(1)$ | $O(n)$ | $O(n)$ | $O(1)$ | Converging index pointers |
+| **Quick Sort** | $O(n \log n)$ | $O(n \log n)$ | $O(n^2)$ | $O(\log n)$ | Degrades to $O(n^2)$ with unbalanced pivot |
+| **Merge Sort** | $O(n \log n)$ | $O(n \log n)$ | $O(n \log n)$ | $O(n)$ | Stable divide and conquer |
+| **Bubble Sort** | $O(n)$ | $O(n^2)$ | $O(n^2)$ | $O(1)$ | Adjacent element swapping |
+| **Insertion Sort** | $O(n)$ | $O(n^2)$ | $O(n^2)$ | $O(1)$ | Efficient on nearly sorted data |
+| **Breadth-First Search (BFS)** | $O(V + E)$ | $O(V + E)$ | $O(V + E)$ | $O(V)$ | Level-by-level queue exploration |
+| **Depth-First Search (DFS)** | $O(V + E)$ | $O(V + E)$ | $O(V + E)$ | $O(V)$ | Call stack or explicit recursion |
+| **DP (Tabulation / Memo)** | Problem specific | State $\times$ transitions | State $\times$ transitions | $O(states)$ | Bottom-up array or memoized cache |
+| **Heap (PriorityQueue)** | $O(1)$ peek | $O(\log n)$ insert/remove | $O(\log n)$ insert/remove | $O(n)$ | Binary heap tree operations |
